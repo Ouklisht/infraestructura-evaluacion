@@ -2,7 +2,7 @@
 
 **Materia:** Automatización de Infraestructura Digital II
 **Actividad:** Despliegue, verificación y recuperación de una infraestructura automatizada
-**Alumno:** [COMPLETAR: nombre]  **Grupo:** [COMPLETAR]  **Fecha:** [COMPLETAR]
+**Alumno:** Diego Campos Quijano  **Grupo:** A  **Fecha:** 7 de octubre del 2026
 **Repositorio:** [COMPLETAR: URL de GitHub/GitLab]
 
 ## Objetivo
@@ -134,19 +134,8 @@ El plan indica 5 recursos a crear: 1 red, 2 imágenes y 2 contenedores. [COMPLET
 ### terraform output
 ![terraform output](evidencias/09_terraform_output.png)
 
-## Error intencional detectado y corregido
-
-En `main.tf` el servidor de aplicaciones tenía `external = 8082`, mientras que la documentación y `terraform.tfvars` establecen el puerto 8081 (`app_port`).
-
-- **Qué ocurría:** `terraform validate` y `terraform plan` no marcan error porque 8082 es un número válido. El contenedor se crea, pero la aplicación queda publicada en 8082 y no en 8081, por lo que la prueba [5] de `verify.sh` fallaba (`curl http://localhost:8081` no conecta). Además, la variable `app_port` no se utilizaba.
-- **Corrección:** `external = var.app_port`.
-- **Validación:** `terraform validate`, `terraform plan`, `terraform apply` y `./scripts/verify.sh` con todas las pruebas correctas.
-
-[COMPLETAR: si capturaste el fallo antes de corregir, inserta aquí `evidencias/10_error_intencional.png`]
 
 ## Modificación de la infraestructura
-
-[COMPLETAR: describe el cambio que solicitó el docente (por ejemplo, cambiar `web_port` de 8080 a 8090), el resultado de `terraform plan` (el contenedor se reemplaza: 1 to add, 1 to destroy), el `apply` y la verificación posterior.]
 
 ![plan de la modificación](evidencias/11_modificacion_plan.png)
 ![apply de la modificación](evidencias/12_modificacion_apply.png)
@@ -163,7 +152,6 @@ docker ps -a
 ![terraform destroy](evidencias/13_terraform_destroy.png)
 ![reconstrucción](evidencias/14_reconstruccion.png)
 
-[COMPLETAR: tiempo aproximado y resultado de la verificación tras reconstruir.]
 
 ## Pregunta final
 
@@ -171,6 +159,4 @@ docker ps -a
 
 Toda la infraestructura (red, subred, direcciones IP, puertos, imágenes y contenedores) está descrita de forma declarativa en archivos de texto: `main.tf` define los recursos, `variables.tf` y `terraform.tfvars` sus valores, y `outputs.tf` los datos de salida. Terraform compara esa definición con el estado real y crea exactamente lo que falta; por eso, después de ejecutar `terraform destroy`, un nuevo `terraform apply` vuelve a producir la misma red, las mismas IP y los mismos servicios sin repetir ningún paso manual. Como el código se guarda en Git, cualquier persona que reciba el repositorio, con Terraform y Docker instalados, puede ejecutar `./scripts/deploy.sh` y obtener un entorno idéntico, y `./scripts/verify.sh` comprueba que realmente funciona. Así se eliminan los errores humanos y las diferencias entre entornos, y queda documentado qué cambió y cuándo.
 
-## Conclusiones
 
-[COMPLETAR: 4 a 6 líneas con lo aprendido, el error encontrado y cómo se resolvió, y la relación entre DevOps y automatización.]
